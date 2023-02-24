@@ -11,6 +11,20 @@ services:
     networks:
       - gitlab
 
+  nginx:
+    image: 'nginx:latest'
+    container_name: nginx
+    restart: always
+    volumes:
+      - .:/usr/share/nginx/html
+    ports:
+      - '8080:80'
+    networks:
+      - gitlab
+
+    environment:
+      - VIRTUAL_HOST=gitlab.local
+
 networks:
   gitlab:
     name: gitlab-network
