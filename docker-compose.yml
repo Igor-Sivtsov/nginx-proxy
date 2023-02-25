@@ -8,42 +8,25 @@ services:
       - '80:80'
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./certs:/etc/nginx/certs:ro
-      - ./vhost.d:/etc/nginx/vhost.d:ro
-      #- /usr/share/nginx/html
     networks:
-      - gitlab
-
-  letsencrypt-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: letsencrypt-companion
-    restart: always
-    depends_on:
-      - nginx-proxy  
-
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./certs:/etc/nginx/certs:rw
-      - ./vhost.d:/etc/nginx/vhost.d:rw
-
+      - test
 
   nginx:
     image: 'nginx:latest'
     container_name: nginx
     restart: always
     depends_on:
-      - letsencrypt-companion
+      - nginx-proxy  
     volumes:
       - .:/usr/share/nginx/html
     ports:
       - '8080:80'
     networks:
-      - gitlab
+      - test
+
     environment:
       - VIRTUAL_HOST=gitlab.local
-      - LETSENCRYPT_HOST=gitlab.local
-      - LETSENCRYPT_EMAIL=lia.energio@gmail.com
 
 networks:
-  gitlab:
-    name: gitlab-network
+  test:
+    name: test-network
